@@ -33,7 +33,8 @@ void kernel (unsigned n, float a[n][n], float b[n][n], float c[n][n]) {
 
 #else
 
-/* original */
+
+/*
 void kernel (unsigned n, float a[n][n], float b[n][n], float c[n][n]) {
    int i, j, k;
 
@@ -45,4 +46,18 @@ void kernel (unsigned n, float a[n][n], float b[n][n], float c[n][n]) {
             c[i][j] += a[i][k] * b[k][j];
       }
 }
+*/
+
+/* Baseline */
+void kernel (unsigned n, const double a[n][n], const double b[n], double c[n]) {
+   unsigned i, j;
+   for (j=0; j<n; j++)
+      for (i=0; i<n; i++) {
+         c[i]-=b[n-1-i];
+         if (i<j)
+            c[i]+=a[i][j];
+   }
+}
 #endif
+
+
