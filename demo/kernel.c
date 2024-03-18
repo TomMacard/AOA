@@ -55,7 +55,7 @@ void kernel (unsigned n, const double a[n][n], const double b[n], double c[n]) {
       for (i=0; i<n; i++) {
          c[i]-=b[n-1-i];
          if (i<j)
-            c[i]+=a[i][j];
+            c[i]+=a[i][j] ;
    }
 }
 #endif
