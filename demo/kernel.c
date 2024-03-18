@@ -34,7 +34,7 @@ void kernel (unsigned n, float a[n][n], float b[n][n], float c[n][n]) {
 #else
 
 
-/*
+/* ORIGINAL
 void kernel (unsigned n, float a[n][n], float b[n][n], float c[n][n]) {
    int i, j, k;
 

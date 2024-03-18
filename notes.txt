@@ -44,7 +44,7 @@ Phase I (options de compilation)
 0) Calculez la taille du problème de telle sorte de tenir dans le niveau
 mémoire ciblé puis étalonnez le bon nombre de répétitions. Vous
 apprendrez à le faire lors des deux premières séances
-1) Mesurez la performance du noyau avec gcc (-O2, -O3 puis -O3
+1) Mesurez la performance du noyau avec gcc (-O2, -O3 puis -O3      -funroll-loops
 -march=native) puis même chose avec icx (Intel) ou AOCC (AMD Zen)
 2) Recommencez avec d'autres options d'optimisation qui vous
 sembleraient pertinentes (vous devrez les chercher dans la documentation

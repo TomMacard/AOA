@@ -19,7 +19,7 @@ static void init_array_2D (int n, double a[n][n]) {
 }
 
 static void init_array_1D (int n, double a[n]) {
-   int i, j;
+   int i;
    for (i=0; i<n; i++)
       a[i] = (double) rand() / RAND_MAX;
 }
@@ -56,13 +56,13 @@ int main (int argc, char *argv[]) {
 
       /* allocate arrays. TODO: adjust for each kernel */
       double (*a)[size] = malloc (size * size * sizeof a[0][0]);
-      double (*b)[size] = malloc (size * size * sizeof b[0]);
-      double (*c)[size] = malloc (size * size * sizeof c[0]);
+      double *b = malloc (size * sizeof b[0]);
+      double *c = malloc (size * sizeof c[0]);
 
       /* init arrays */
       srand(0);
       init_array_2D (size, a);
-      init_vector_1D (size, b);
+      init_array_1D (size, b);
 
       /* warmup (repw repetitions in first meta, 1 repet in next metas) */
       if (m == 0) {
