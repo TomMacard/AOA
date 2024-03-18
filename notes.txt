@@ -1,0 +1,100 @@
+/home/tm/Documents/Maqao/bin/maqao oneview -R1 -- ./measure 300 100 30
+
+
+
+Comme dit précédemment, il ne peut y avoir que des équipes de 4 (L1, L2,
+L3 et RAM) sauf si l'effectif d'un groupe de TD (A/B) n'est pas multiple
+de 4 auquel cas il y aura soit 1 soit 2 trinômes dans ce groupe. En
+d'autres termes, *le nombre d'équipes doit être minimal*.
+
+Bien entendu les membres d'une équipe doivent tous appartenir au même
+groupe de TD (A ou B).
+
+Veuillez communiquer rapidement vos choix (de membres et de sujet) à
+votre délégué(e) qui centralisera les demandes pour chacun des deux
+groupes (par avance, merci à eux) dans l'ordre premier arrivé premier
+servi. Opportun donc de lui communiquer un second voeu si le premier
+s'avérait déjà pris.
+
+Les sujets seront ensuite répartis entre moi (6 ou 7 sujets) et mon
+collègue (5 ou 6 sujets). J'ai estimé à la louche qu'il n'y aurait pas
+plus de 12 équipes mais j'ai donné 13 sujets histoire de vous laisser
+plus de choix. En effet, j'ai déjà du le dire : un sujet ne peut être
+pris que par une et une seule équipe.
+
+
+
+Chaque équipe aura un code différent à optimiser, que nous appellerons
+"noyau" dans la suite de ce mail. Sauf mention contraire spécifiée avec
+le noyau, dans une équipe, un étudiant étudiera les performances en L1,
+un autre en L2, le troisième en L3 et le quatrième en RAM (en cas de
+trinôme, un de ces deux derniers niveaux mémoire ne sera pas étudié).
+
+Les mesures seront faites sur le cluster OB-1 ou vos machines personnelles.
+
+Il y aura deux "phases" (périodes), une note sera donnée à l'issue de
+chacune.
+
+TRES IMPORTANT : Pour toutes les questions, vous devez justifier vos
+choix. Vous devez notamment expliquer pourquoi vous avez fait ainsi et
+pas autrement, et comment vous l'avez fait.
+
+Phase I (options de compilation)
+================================
+0) Calculez la taille du problème de telle sorte de tenir dans le niveau
+mémoire ciblé puis étalonnez le bon nombre de répétitions. Vous
+apprendrez à le faire lors des deux premières séances
+1) Mesurez la performance du noyau avec gcc (-O2, -O3 puis -O3
+-march=native) puis même chose avec icx (Intel) ou AOCC (AMD Zen)
+2) Recommencez avec d'autres options d'optimisation qui vous
+sembleraient pertinentes (vous devrez les chercher dans la documentation
+de gcc, AOCC ou icx), que vous pourrez combiner entre elles...
+3) Expliquez les différences de performances entre versions en vous
+appuyant sur les rapports MAQAO (et, si vous le souhaitez [optionnel],
+likwid-perfctr ou perf-stat)
+
+Phase II (transformation de code)
+=================================
+
+Phase II.1 (gcc -O2 imposé)
+---------------------------
+0) Configurez la compilation (gcc -O2)
+1) Mesurez la performance du noyau
+2) Analysez le noyau avec MAQAO (et optionnellement likwid-perfctr ou
+perf-stat)
+3) Identifiez le goulet d'étranglement (ce qui limite les performances)
+4) Proposez une optimisation (au niveau source)
+5) Recommencez (rebouclez à l'étape 1) tant que vous arrivez à
+améliorer les performances. Vous pouvez soit repartir du noyau non
+optimisé, soit d'un noyau précédemment optimisé
+
+Phase II.2 (compilateur et options de compil. pouvant être modifiées)
+---------------------------------------------------------------------
+6) Une fois (mais pas avant) que vous n'arrivez plus à obtenir de gain
+en phase II.1, notez bien les performances correspondantes ainsi que
+toutes les étapes qui vous ont permis d'y arriver puis relâchez la
+contrainte sur la compilation : vous pouvez alors utiliser des options
+plus agressives ou/et un autre compilateur => rebouclez à l'étape 1
+jusqu'à ne plus obtenir de gain supplémentaire. Attention : avec votre
+noyau modifié, les meilleures options de compilation ne sont plus
+forcément celles trouvées en phase I !
+7) Question facultative (1 à 2 points bonus) :
+7a) Utilisez des directives OpenMP pour paralléliser votre noyau. S'il
+ne vous semble pas parallélisable, expliquez pourquoi, et comment on
+pourrait malgré tout le paralléliser (avec degré de concurrence moindre,
+autre algorithme etc.)
+7b) Utilisez des intrinsics pour écrire/optimiser le code (niveau
+avancé), voire modifiez directement l'assembleur (niveau expert). Vous
+pouvez également utiliser le compilateur ISPC (https://ispc.github.io/).
+
+La nature itérative de cette phase II doit transparaître dans vos
+rapports autant que possible.
+
+Notamment, dites en quoi MAQAO (voire likwid-perfctr ou perf-stat) vous
+ont aidé pour les étapes 3 et 4. Dans le cas contraire, nous
+apprécierions que vous critiquiez (de façon justifiée et si possible
+constructive) ces outils avec preuves à l'appui.
+
+Pour l'étape 4, vous trouverez une liste assez exhaustive de
+transformations de boucles :
+http://en.wikipedia.org/wiki/Loop_optimization#Optimization_via_a_sequence_of_loop_transformations
