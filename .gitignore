@@ -4,4 +4,6 @@ maqao*/
 *.o
 calibrate
 check
-measure
+measure*
+.~lock*
+MAQAO_*/

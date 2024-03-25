@@ -1,6 +1,8 @@
 /home/tm/Documents/Maqao/bin/maqao oneview -R1 -- ./measure 300 100 30
 
+source /opt/intel/oneapi/setvars.sh
 
+sudo sysctl -w kernel.kptr_restrict=0
 
 Comme dit précédemment, il ne peut y avoir que des équipes de 4 (L1, L2,
 L3 et RAM) sauf si l'effectif d'un groupe de TD (A/B) n'est pas multiple
