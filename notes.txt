@@ -16,7 +16,7 @@ maqao oneview -R1 -- ./measure 300 100 30
 
 
 
-
+Remarque : tout ne pourra pas forcément être fait en commun (pas de L3 sur KNL, un étudiant avec AOCC tandis que les autres seront sur oneAPI etc.). Dans ce cas alimenter section 3.2 pour l’étudiant en L1 (4.2 pour celui en L2 etc.).
 
 
 

@@ -49,8 +49,7 @@ int main (int argc, char *argv[]) {
 
    unsigned m;
    for (m=0; m<NB_METAS; m++) {
-      printf ("Metarepetition %u/%d: running %u warmup instances and %u measure instances\n", m+1, NB_METAS,
-              m == 0 ? repw : 1, repm);
+      //printf ("Metarepetition %u/%d: running %u warmup instances and %u measure instances\n", m+1, NB_METAS, m == 0 ? repw : 1, repm);
 
       unsigned i;
 
