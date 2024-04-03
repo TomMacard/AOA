@@ -1,5 +1,5 @@
 TAILLE=1000
-REPETITION=500
+REPETITION=300
 WARMUP=30
 
 
@@ -97,10 +97,13 @@ measure_ICX: kernel_ICX.o rdtsc.o driver.o
 measure_native_ICX: kernel_native_ICX.o rdtsc.o driver.o
 	$(CX) -o $@ $^
 
+measure_unroll: kernel_unroll.o rdtsc.o driver.o
+	$(CC) -o $@ $^
 
 
-compile_kernel: kernel_O2.o kernel_O3.o kernel_fast.o kernel_native.o kernel_native_ICX.o kernel_unroll.o kernel_ICX.o
-compile_general: measure_O2 measure_O3 measure_fast measure_native measure_native_ICX measure_ICX
+
+compile_kernel: kernel_O2.o kernel_O3.o kernel_fast.o kernel_native.o kernel_native_ICX.o kernel_unroll.o kernel_ICX.o kernel_unroll.o
+compile_general: measure_O2 measure_O3 measure_fast measure_native measure_native_ICX measure_ICX measure_unroll
 
 
 
@@ -111,6 +114,7 @@ test:
 	taskset -c 2 ./measure_native $(TAILLE) $(REPETITION) $(WARMUP) >> result_native.txt
 	taskset -c 2 ./measure_ICX $(TAILLE) $(REPETITION) $(WARMUP) >> result_ICX.txt
 	taskset -c 2 ./measure_native_ICX $(TAILLE) $(REPETITION) $(WARMUP) >> result_native_ICX.txt
+	taskset -c 2 ./measure_unroll $(TAILLE) $(REPETITION) $(WARMUP) >> result_unroll.txt
 
 
 test_maqao:
@@ -120,6 +124,7 @@ test_maqao:
 	taskset -c 2 $(MAQAO) oneview -xp=MAQAO_native -R1 -- ./measure_native $(TAILLE) $(REPETITION) $(WARMUP)
 	taskset -c 2 $(MAQAO) oneview -xp=MAQAO_ICX -R1 -- ./measure_ICX $(TAILLE) $(REPETITION) $(WARMUP)
 	taskset -c 2 $(MAQAO) oneview -xp=MAQAO_native_ICX -R1 -- ./measure_native_ICX $(TAILLE) $(REPETITION) $(WARMUP)
+	taskset -c 2 $(MAQAO) oneview -xp=MAQAO_unroll -R1 -- ./measure_unroll $(TAILLE) $(REPETITION) $(WARMUP)
 	
 
 
