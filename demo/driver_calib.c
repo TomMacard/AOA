@@ -7,6 +7,27 @@
 
 extern uint64_t rdtsc ();
 
+//----------------------------------
+//TODO: adjust for each kernel
+extern void kernel (unsigned n, const double a[n][n], const double b[n], double c[n]);
+
+// TODO: adjust for each kernel
+static void init_array_2D (int n, double a[n][n]) {
+   int i, j;
+
+   for (i=0; i<n; i++)
+      for (j=0; j<n; j++)
+         a[i][j] = (double) rand() / RAND_MAX;
+}
+
+static void init_array_1D (int n, double a[n]) {
+   int i;
+   for (i=0; i<n; i++)
+      a[i] = (double) rand() / RAND_MAX;
+}
+
+//----------------
+/*
 // TODO: adjust for each kernel
 extern void kernel (unsigned n, float a[n][n], float b[n][n], float c[n][n]);
 
@@ -17,7 +38,7 @@ static void init_array (int n, float a[n][n]) {
    for (i=0; i<n; i++)
       for (j=0; j<n; j++)
          a[i][j] = (float) rand() / RAND_MAX;
-}
+}*/
 
 static int cmp_uint64 (const void *a, const void *b) {
    const uint64_t va = *((uint64_t *) a);
@@ -49,14 +70,22 @@ int main (int argc, char *argv[]) {
       unsigned i;
 
       /* allocate arrays. TODO: adjust for each kernel */
-      float (*a)[size] = malloc (size * size * sizeof a[0][0]);
-      float (*b)[size] = malloc (size * size * sizeof b[0][0]);
-      float (*c)[size] = malloc (size * size * sizeof c[0][0]);
+      //float (*a)[size] = malloc (size * size * sizeof a[0][0]);
+      //float (*b)[size] = malloc (size * size * sizeof b[0][0]);
+      //float (*c)[size] = malloc (size * size * sizeof c[0][0]);
+
+      double (*a)[size] = malloc (size * size * sizeof a[0][0]);
+      double *b = malloc (size * sizeof b[0]);
+      double *c = malloc (size * sizeof c[0]);
 
       /* init arrays */
       srand(0);
-      init_array (size, a);
-      init_array (size, b);
+      //init_array (size, a);
+      //init_array (size, b);
+
+      init_array_2D (size, a);
+      init_array_1D (size, b);
+      init_array_1D (size, c);
 
       // No warmup, measure individual instances
       for (i=0; i<repm; i++) {
@@ -76,7 +105,8 @@ int main (int argc, char *argv[]) {
       nanosleep (&two_seconds, NULL);
    }
 
-   const uint64_t nb_inner_iters = size * size * size; // TODO adjust for each kernel
+   const uint64_t nb_inner_iters = size * size ; // TODO adjust for each kernel
+   
    int i;
    for (i=0; i<repm; i++) {
       printf ("Instance %u/%u\n", i+1, repm);
