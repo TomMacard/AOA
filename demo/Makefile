@@ -7,8 +7,11 @@ WARMUP=30
 
 CC=gcc
 CX=/opt/intel/oneapi/compiler/2024.0/bin/icx
+
+# Chris
 MAQAO=/home/noonman/mesprojets/archi_semestre2/maqao.x86_64.2.19.0/bin/maqao
 
+# Tom
 #MAQAO=/home/tm/Documents/Maqao/bin/maqao
 
 
