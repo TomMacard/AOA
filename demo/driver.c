@@ -63,6 +63,7 @@ int main (int argc, char *argv[]) {
       srand(0);
       init_array_2D (size, a);
       init_array_1D (size, b);
+      init_array_1D (size, c);
 
       /* warmup (repw repetitions in first meta, 1 repet in next metas) */
       if (m == 0) {

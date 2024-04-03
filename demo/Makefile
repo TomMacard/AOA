@@ -7,7 +7,9 @@ WARMUP=30
 
 CC=gcc
 CX=/opt/intel/oneapi/compiler/2024.0/bin/icx
-MAQAO=/home/tm/Documents/Maqao/bin/maqao
+MAQAO=/home/noonman/mesprojets/archi_semestre2/maqao.x86_64.2.19.0/bin/maqao
+
+#MAQAO=/home/tm/Documents/Maqao/bin/maqao
 
 
 
@@ -20,8 +22,11 @@ OPT_O2=-O2 -g -Wall
 OPT_O3=-O3 -g -Wall
 OPT_fast=-Ofast -g -Wall
 OPT_native=-O3 -g -Wall -march=native
-OPT_native_ICX=-O3 -g -Wall -xHost
 OPT_unroll=-O3 -g -Wall -funroll-loops
+
+
+OPT_native_ICX=-O3 -g -Wall -xHost
+
 
 
 OBJS_COMMON=kernel.o rdtsc.o
