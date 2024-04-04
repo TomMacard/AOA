@@ -24,7 +24,6 @@ CFLAGS=-O2 -g -Wall
 OPT_O2=-O2 -g -Wall
 OPT_O3=-O3 -g -Wall
 OPT_fast=-Ofast -g -Wall
-OPT_fast_ICX = -O3 -g -Wall -fp-model fast=2
 OPT_native=-O3 -g -Wall -march=native
 OPT_unroll=-O3 -g -Wall -funroll-loops
 
