@@ -39,7 +39,7 @@ static void print_array_2D (int n, float a[n][n], const char *output_file_name) 
    fclose (fp);
 }
 
-static void print_array_1D (int n, float a[n], const char *output_file_name) {
+static void print_array_1D (int n, double a[n], const char *output_file_name) {
    int i;
 
    FILE *fp = fopen (output_file_name, "w");
