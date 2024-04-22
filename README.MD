@@ -8,7 +8,7 @@ Jean-Christopher Sem (RAM)
 # compilation
 
 dans dossier src/ :
-"make OPT=NOOPT" : compilation sans optimisation et en GCC 02
+"make OPT=NOOPT" : compilation
 "make go OPT=NOOPT" : compilation ET EXECUTION de toutes les versions (02, 03, ICX, funroll loops...)
 "make go_maqao OPT=NOOPT" de même mais exécution avec maqao
 

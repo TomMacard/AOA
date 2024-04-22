@@ -1,34 +1,27 @@
 #ifdef OPT1
 
-/* Removing of store to load dependency (array ref replaced by scalar) */
-void kernel (unsigned n, float a[n][n], float b[n][n], float c[n][n]) {
-   int i, j, k;
-
-   for (i=0; i<n; i++)
-      for (j=0; j<n; j++) {
-         float s = 0.0f;
-
-         for (k=0; k<n; k++)
-            s += a[i][k] * b[k][j];
-
-         c[i][j] = s;
-      }
+void kernel (unsigned n, const double a[n][n], const double b[n], double c[n]) {
+   unsigned i, j;
+   for (j=0; j<n; j++)
+      c[j]-=b[n-1-j]*n;
+   for (i=0; i<n; i++) {
+      for (j=i+1; j<n; j++)
+         c[i]+=a[i][j] ;
+   }
 }
+
 
 #elif defined OPT2
 
-#include <string.h> // memset
-
-/* ijk -> ikj permutation to make stride 1 the innermost loop */
-void kernel (unsigned n, float a[n][n], float b[n][n], float c[n][n]) {
-   int i, j, k;
-
-   memset (c, 0, n * n * sizeof c[0][0]);
-
-   for (i=0; i<n; i++)
-      for (k=0; k<n; k++)
-         for (j=0; j<n; j++)
-            c[i][j] += a[i][k] * b[k][j];
+/* opt , faire partir i de j au lieu de 0, et faire sauter le conditionnel */
+void kernel (unsigned n, const double a[n][n], const double b[n], double c[n]) {
+   unsigned i, j;
+   for (j=0; j<n; j++) {
+      c[j]-=b[n-1-j]*n;
+      for (i=j+1; i<n; i++) {
+         c[j]+=a[j][i] ;
+      }
+   }
 }
 
 #else

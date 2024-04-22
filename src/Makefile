@@ -1,5 +1,5 @@
 TAILLE=1000
-REPETITION=100
+REPETITION=500
 WARMUP=10
 
 
@@ -7,6 +7,9 @@ WARMUP=10
 
 CC=gcc
 CX=/opt/intel/oneapi/compiler/2024.0/bin/icx
+
+# Myriam
+#CX=/opt/intel/oneapi/compiler/2024.1/bin/icx
 
 # Chris
 #MAQAO=/home/noonman/mesprojets/archi_semestre2/maqao.x86_64.2.19.0/bin/maqao
@@ -26,7 +29,6 @@ OPT_O3=-O3 -g -Wall
 OPT_fast=-Ofast -g -Wall
 OPT_native=-O3 -g -Wall -march=native
 OPT_unroll=-O3 -g -Wall -funroll-loops
-
 
 OPT_native_ICX=-O3 -g -Wall -xHost
 
@@ -76,6 +78,9 @@ kernel_ICX.o: kernel.c
 kernel_native_ICX.o: kernel.c
 	$(CX) $(OPT_native_ICX) -D $(OPT) -c $< -o $@
 
+kernel_fast_ICX.o: kernel.c
+	$(CX) $(OPT_fast) -D $(OPT) -c $< -o $@
+
 
 
 measure_O2: kernel_O2.o rdtsc.o driver.o
@@ -99,11 +104,17 @@ measure_ICX: kernel_ICX.o rdtsc.o driver.o
 measure_native_ICX: kernel_native_ICX.o rdtsc.o driver.o
 	$(CX) -o $@ $^
 
+measure_fast_ICX: kernel_fast_ICX.o rdtsc.o driver.o
+	$(CX) -o $@ $^
+
+
+check_O2: kernel_O2.o rdtsc.o driver_check.o
+	$(CC) -o $@ $^
 
 
 
-compile_kernel: kernel_O2.o kernel_O3.o kernel_fast.o kernel_native.o kernel_native_ICX.o kernel_unroll.o kernel_ICX.o kernel_unroll.o
-compile_general: measure_O2 measure_O3 measure_fast measure_native measure_native_ICX measure_ICX measure_unroll
+compile_kernel: kernel_O2.o kernel_O3.o kernel_fast.o kernel_native.o kernel_native_ICX.o kernel_unroll.o kernel_ICX.o kernel_unroll.o kernel_fast_ICX.o
+compile_general: measure_O2 measure_O3 measure_fast measure_native measure_native_ICX measure_ICX measure_unroll measure_fast_ICX
 
 
 
@@ -115,6 +126,7 @@ test:
 	taskset -c 2 ./measure_unroll $(TAILLE) $(WARMUP) $(REPETITION) >> result_unroll.txt
 	taskset -c 2 ./measure_ICX $(TAILLE) $(WARMUP) $(REPETITION) >> result_ICX.txt
 	taskset -c 2 ./measure_native_ICX $(TAILLE) $(WARMUP) $(REPETITION) >> result_native_ICX.txt
+	taskset -c 2 ./measure_fast_ICX $(TAILLE) $(WARMUP) $(REPETITION) >> result_fast_ICX.txt
 
 
 test_maqao:
@@ -125,7 +137,44 @@ test_maqao:
 	taskset -c 2 $(MAQAO) oneview -xp=MAQAO_unroll -R1 -- ./measure_unroll $(TAILLE) $(WARMUP) $(REPETITION)
 	taskset -c 2 $(MAQAO) oneview -xp=MAQAO_ICX -R1 -- ./measure_ICX $(TAILLE) $(WARMUP) $(REPETITION)
 	taskset -c 2 $(MAQAO) oneview -xp=MAQAO_native_ICX -R1 -- ./measure_native_ICX $(TAILLE) $(WARMUP) $(REPETITION)
-	
+	taskset -c 2 $(MAQAO) oneview -xp=MAQAO_fast_ICX -R1 -- ./measure_fast_ICX $(TAILLE) $(WARMUP) $(REPETITION)
+
+
+
+go_phase2:
+	make kernel_O2.o OPT=NOOPT
+	make measure_O2
+	make check_O2
+	taskset -c 2 ./check_O2 $(TAILLE) result_NOOPT.txt
+	taskset -c 2 $(MAQAO) oneview -xp=MAQAO_NOOPT -R1 -- ./measure_O2 $(TAILLE) $(WARMUP) $(REPETITION)
+	rm kernel_O2.o
+	rm check_O2
+	rm measure_O2
+
+	make kernel_O2.o OPT=OPT1
+	make measure_O2
+	make check_O2
+	taskset -c 2 ./check_O2 $(TAILLE) result_OPT1.txt
+	taskset -c 2 $(MAQAO) oneview -xp=MAQAO_OPT1 -R1 -- ./measure_O2 $(TAILLE) $(WARMUP) $(REPETITION)
+	rm kernel_O2.o
+	rm check_O2
+	rm measure_O2
+
+	make kernel_O2.o OPT=OPT2
+	make measure_O2
+	make check_O2
+	taskset -c 2 ./check_O2 $(TAILLE) result_OPT2.txt
+	taskset -c 2 $(MAQAO) oneview -xp=MAQAO_OPT2 -R1 -- ./measure_O2 $(TAILLE) $(WARMUP) $(REPETITION)
+	rm kernel_O2.o
+	rm check_O2
+	rm measure_O2
+
+
+	firefox &
+	firefox /home/tm/Documents/Taf/AOA/src/MAQAO_NOOPT/RESULTS/measure_O2_one_html/index.html &
+	firefox /home/tm/Documents/Taf/AOA/src/MAQAO_OPT1/RESULTS/measure_O2_one_html/index.html &
+	firefox /home/tm/Documents/Taf/AOA/src/MAQAO_OPT2/RESULTS/measure_O2_one_html/index.html &
+
 
 
 go:
@@ -140,10 +189,13 @@ go_maqao:
 	make test_maqao
 
 clean:
-	rm -rf $(OBJS_COMMON) kernel_ICX.o measure_ICX measure_ICX_O2 measure_ICX_Ofast1 measure_ICX_Ofast2 measure_unroll driver_check.o driver_calib.o driver.o check calibrate measure measure_O2 measure_O3 measure_fast measure_native measure_native_ICX kernel_O2.o kernel_O3.o kernel_fast.o kernel_native.o kernel_native_ICX.o kernel_unroll.o
+	rm -rf $(OBJS_COMMON) *.o
+	rm -rf measure*
+	rm -rf check*
+	rm -rf calibrate*
 
 clean_result:
-	rm -rf result_ICX.txt result_O2.txt result_O3.txt result_fast.txt result_native.txt result_native_ICX.txt result_unroll.txt
+	rm -rf result_*.txt
 
 clean_maqao:
 	rm -rf MAQAO_*
