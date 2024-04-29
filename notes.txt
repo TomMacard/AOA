@@ -1,3 +1,33 @@
+
+Structure PJ (imposée) :
+
+    rapport_phase_2.pdf
+    README.txt (explication de comment compiler puis exécuter)
+    répertoire src (contenant Makefile et fichiers .c/h)
+    répertoire scripts (contenant vos scripts de compilation/lancement)
+    répertoire maqao_html (on ne veut que les sous-répertoires "one_html" situés dans le répertoire "RESULTS" des répertoires Oneview) contenant des sous-répertoires transfos_gcc_O2, transfos_debrid et, optionnel, transfos_avancees
+
+Rapport :
+
+    Structure imposée, CF template joint
+    un seul fichier PDF concaténant les parties commune et individuelles
+    partie commune : présente ce qui a été fait en commun
+    parties individuelles (une par membre) : présente ce qui a été fait individuellement par chacun et notamment les mesures faites dans leur niveau de cache et sur leur machine 
+
+Plus précisément pour la partie individuelle il devrait y avoir notamment une ou des figure(s) illustrant la performance (pour une taille donnée, correspondant à votre niveau de cache) des différentes versions optimisées/comparées.
+
+Des screenshots (intelligents, donc sélectifs...) rendent en général le rapport plus agréable à lire. Notamment nous nous attendons à des screenshots des sorties MAQAO utilisées pour comparer les exécutables issus des différentes versions.
+
+Rappel : vous devez justifier vos choix. Vous devez notamment expliquer pourquoi vous avez fait ainsi et pas autrement, et comment vous l'avez fait. Egalement discuter, après gain (ou non gain) de performance, la différence au niveau du code généré par le compilateur. Ex : si le code généré est identique (ou au préfixe AVX près s'agissant d'instructions scalaires : VADDSS au lieu de ADDSS), ça explique que la perf soit identique ou presque. Au contraire si les instructions sont désormais sous forme vectorielle (ou que le taux de vectorisation passe de 0 à plus de 90%) alors pas étonnant que la performance s'envole. 
+
+
+
+
+
+
+
+
+
 Pour compiler la version originale : make OPT=NOOPT
 Pour compiler la première version optimisée : make OPT=OPT1
 Pour compiler la seconde version optimisée : make OPT=OPT2

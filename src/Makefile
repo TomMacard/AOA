@@ -1,4 +1,4 @@
-TAILLE=1000
+TAILLE=1024
 REPETITION=500
 WARMUP=10
 
@@ -20,7 +20,7 @@ MAQAO=/home/tm/Documents/Maqao/bin/maqao
 
 
 
-CFLAGS=-O2 -g -Wall
+CFLAGS=-O2 -g -Wall 
 
 
 
@@ -169,11 +169,21 @@ go_phase2:
 	rm check_O2
 	rm measure_O2
 
+	make kernel_O2.o OPT=OPT3
+	make measure_O2
+	make check_O2
+	taskset -c 2 ./check_O2 $(TAILLE) result_OPT3.txt
+	taskset -c 2 $(MAQAO) oneview -xp=MAQAO_OPT3 -R1 -- ./measure_O2 $(TAILLE) $(WARMUP) $(REPETITION)
+	rm kernel_O2.o
+	rm check_O2
+	rm measure_O2
+
 
 	firefox &
 	firefox /home/tm/Documents/Taf/AOA/src/MAQAO_NOOPT/RESULTS/measure_O2_one_html/index.html &
 	firefox /home/tm/Documents/Taf/AOA/src/MAQAO_OPT1/RESULTS/measure_O2_one_html/index.html &
 	firefox /home/tm/Documents/Taf/AOA/src/MAQAO_OPT2/RESULTS/measure_O2_one_html/index.html &
+	firefox /home/tm/Documents/Taf/AOA/src/MAQAO_OPT3/RESULTS/measure_O2_one_html/index.html &
 
 
 
