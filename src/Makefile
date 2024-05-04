@@ -1,4 +1,4 @@
-TAILLE=1024
+TAILLE=201
 REPETITION=500
 WARMUP=10
 
@@ -20,7 +20,7 @@ MAQAO=/home/tm/Documents/Maqao/bin/maqao
 
 
 
-CFLAGS=-O2 -g -Wall 
+CFLAGS=-O2 -g -Wall
 
 
 
@@ -60,6 +60,9 @@ driver.o: driver.c
 kernel_O2.o: kernel.c
 	$(CC) $(OPT_O2) -D $(OPT) -c $< -o $@
 
+kernel_O2_msse2.o: kernel.c
+	$(CC) -msse2 $(OPT_O2) -D $(OPT) -c $< -o $@
+
 kernel_O3.o: kernel.c
 	$(CC) $(OPT_O3) -D $(OPT) -c $< -o $@
 
@@ -86,6 +89,9 @@ kernel_fast_ICX.o: kernel.c
 measure_O2: kernel_O2.o rdtsc.o driver.o
 	$(CC) -o $@ $^
 
+measure_O2_msse2: kernel_O2_msse2.o rdtsc.o driver.o
+	$(CC) -msse2 -o $@ $^
+
 measure_O3: kernel_O3.o rdtsc.o driver.o
 	$(CC) -o $@ $^
 
@@ -111,6 +117,9 @@ measure_fast_ICX: kernel_fast_ICX.o rdtsc.o driver.o
 check_O2: kernel_O2.o rdtsc.o driver_check.o
 	$(CC) -o $@ $^
 
+check_O2_msse2: kernel_O2_msse2.o rdtsc.o driver_check.o
+	$(CC) -msse2 -o $@ $^
+
 
 
 compile_kernel: kernel_O2.o kernel_O3.o kernel_fast.o kernel_native.o kernel_native_ICX.o kernel_unroll.o kernel_ICX.o kernel_unroll.o kernel_fast_ICX.o
@@ -130,15 +139,14 @@ test:
 
 
 test_maqao:
-	taskset -c 2 $(MAQAO) oneview -xp=MAQAO_O2 -R1 -- ./measure_O2 $(TAILLE) $(WARMUP) $(REPETITION)
-	taskset -c 2 $(MAQAO) oneview -xp=MAQAO_O3 -R1 -- ./measure_O3 $(TAILLE) $(WARMUP) $(REPETITION)
-	taskset -c 2 $(MAQAO) oneview -xp=MAQAO_Ofast -R1 -- ./measure_fast $(TAILLE) $(WARMUP) $(REPETITION)
-	taskset -c 2 $(MAQAO) oneview -xp=MAQAO_native -R1 -- ./measure_native $(TAILLE) $(WARMUP) $(REPETITION)
-	taskset -c 2 $(MAQAO) oneview -xp=MAQAO_unroll -R1 -- ./measure_unroll $(TAILLE) $(WARMUP) $(REPETITION)
-	taskset -c 2 $(MAQAO) oneview -xp=MAQAO_ICX -R1 -- ./measure_ICX $(TAILLE) $(WARMUP) $(REPETITION)
-	taskset -c 2 $(MAQAO) oneview -xp=MAQAO_native_ICX -R1 -- ./measure_native_ICX $(TAILLE) $(WARMUP) $(REPETITION)
-	taskset -c 2 $(MAQAO) oneview -xp=MAQAO_fast_ICX -R1 -- ./measure_fast_ICX $(TAILLE) $(WARMUP) $(REPETITION)
-
+	taskset -c 2 $(MAQAO) oneview -xp=$(OPT)_MAQAO_O2 -R1 -- ./measure_O2 $(TAILLE) $(WARMUP) $(REPETITION)
+	taskset -c 2 $(MAQAO) oneview -xp=$(OPT)_MAQAO_O3 -R1 -- ./measure_O3 $(TAILLE) $(WARMUP) $(REPETITION)
+	taskset -c 2 $(MAQAO) oneview -xp=$(OPT)_MAQAO_Ofast -R1 -- ./measure_fast $(TAILLE) $(WARMUP) $(REPETITION)
+	taskset -c 2 $(MAQAO) oneview -xp=$(OPT)_MAQAO_native -R1 -- ./measure_native $(TAILLE) $(WARMUP) $(REPETITION)
+	taskset -c 2 $(MAQAO) oneview -xp=$(OPT)_MAQAO_unroll -R1 -- ./measure_unroll $(TAILLE) $(WARMUP) $(REPETITION)
+	taskset -c 2 $(MAQAO) oneview -xp=$(OPT)_MAQAO_ICX -R1 -- ./measure_ICX $(TAILLE) $(WARMUP) $(REPETITION)
+	taskset -c 2 $(MAQAO) oneview -xp=$(OPT)_MAQAO_native_ICX -R1 -- ./measure_native_ICX $(TAILLE) $(WARMUP) $(REPETITION)
+	taskset -c 2 $(MAQAO) oneview -xp=$(OPT)_MAQAO_fast_ICX -R1 -- ./measure_fast_ICX $(TAILLE) $(WARMUP) $(REPETITION)
 
 
 go_phase2:
@@ -178,14 +186,45 @@ go_phase2:
 	rm check_O2
 	rm measure_O2
 
+	make kernel_O2.o OPT=OPT4
+	make measure_O2
+	make check_O2
+	taskset -c 2 ./check_O2 $(TAILLE) result_OPT4.txt
+	taskset -c 2 $(MAQAO) oneview -xp=MAQAO_OPT4 -R1 -- ./measure_O2 $(TAILLE) $(WARMUP) $(REPETITION)
+	rm kernel_O2.o
+	rm check_O2
+	rm measure_O2
 
-	firefox &
-	firefox /home/tm/Documents/Taf/AOA/src/MAQAO_NOOPT/RESULTS/measure_O2_one_html/index.html &
-	firefox /home/tm/Documents/Taf/AOA/src/MAQAO_OPT1/RESULTS/measure_O2_one_html/index.html &
-	firefox /home/tm/Documents/Taf/AOA/src/MAQAO_OPT2/RESULTS/measure_O2_one_html/index.html &
-	firefox /home/tm/Documents/Taf/AOA/src/MAQAO_OPT3/RESULTS/measure_O2_one_html/index.html &
+	make kernel_O2_msse2.o OPT=OPT5
+	make measure_O2_msse2
+	make check_O2_msse2
+	taskset -c 2 ./check_O2_msse2 $(TAILLE) result_OPT5.txt
+	taskset -c 2 $(MAQAO) oneview -xp=MAQAO_OPT5 -R1 -- ./measure_O2_msse2 $(TAILLE) $(WARMUP) $(REPETITION)
+	rm kernel_O2_msse2.o
+	rm check_O2_msse2
+	rm measure_O2_msse2
 
 
+#	firefox /home/tm/Documents/Taf/AOA/src/MAQAO_NOOPT/RESULTS/measure_O2_one_html/index.html &
+#	firefox /home/tm/Documents/Taf/AOA/src/MAQAO_OPT1/RESULTS/measure_O2_one_html/index.html &
+#	firefox /home/tm/Documents/Taf/AOA/src/MAQAO_OPT2/RESULTS/measure_O2_one_html/index.html &
+#	firefox /home/tm/Documents/Taf/AOA/src/MAQAO_OPT3/RESULTS/measure_O2_one_html/index.html &
+#	firefox /home/tm/Documents/Taf/AOA/src/MAQAO_OPT4/RESULTS/measure_O2_one_html/index.html &
+
+
+gorgor:
+	make go_maqao OPT=NOOPT
+	make clean
+	make go_maqao OPT=OPT1
+	make clean
+	make go_maqao OPT=OPT2
+	make clean
+	make go_maqao OPT=OPT3
+	make clean
+	make go_maqao OPT=OPT4
+	make clean
+	make go_maqao OPT=OPT5
+	make clean
 
 go:
 	make compile_kernel
@@ -208,7 +247,7 @@ clean_result:
 	rm -rf result_*.txt
 
 clean_maqao:
-	rm -rf MAQAO_*
+	rm -rf *_MAQAO_*
 
 clean_all:
 	make clean
