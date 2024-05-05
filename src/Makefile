@@ -1,4 +1,4 @@
-TAILLE=201
+TAILLE=2001
 REPETITION=500
 WARMUP=10
 
@@ -6,18 +6,23 @@ WARMUP=10
 
 
 CC=gcc
-CX=/opt/intel/oneapi/compiler/2024.0/bin/icx
+
 
 # Myriam
-#CX=/opt/intel/oneapi/compiler/2024.1/bin/icx
+# CX=/opt/intel/oneapi/compiler/2024.1/bin/icx
+# MAQAO=/home/myriam/Téléchargements/maqao.x86_64.2.19.0/bin/maqao
 
 # Chris
-#MAQAO=/home/noonman/mesprojets/archi_semestre2/maqao.x86_64.2.19.0/bin/maqao
+# CX=/opt/intel/oneapi/compiler/2024.0/bin/icx
+# MAQAO=/home/noonman/mesprojets/archi_semestre2/maqao.x86_64.2.19.0/bin/maqao
 
 # Tom
+CX=/opt/intel/oneapi/compiler/2024.0/bin/icx
 MAQAO=/home/tm/Documents/Maqao/bin/maqao
 
-
+# Houda
+# CX=/opt/intel/oneapi/compiler/2024.1/bin/icx
+# MAQAO=/home/houda/Downloads/maqao.x86_64.2.20.1/bin/maqao
 
 
 CFLAGS=-O2 -g -Wall
